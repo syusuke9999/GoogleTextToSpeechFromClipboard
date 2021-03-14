@@ -1,24 +1,47 @@
 """テキストまたはssmlの入力文字列から音声を合成します。
 注：SSMLはhttps://www.w3.org/TR/speech-synthesis/に応じて適切に形成されなければなりません
 """
+from google.cloud.texttospeech_v1beta1 import AudioEncoding
 from playsound import playsound
 import pyperclip
 
 
 def main():
+    import os
     clip_str = ""
     while True:
         # クリップボードから文字列を取得する
         if type(pyperclip.paste()) is str:
             if clip_str != pyperclip.paste():
                 clip_str = pyperclip.paste()
+                # ssml_text = text_to_ssml(clip_str)
+                print(clip_str)
+                if os.path.isfile("output.mp3"):
+                    os.remove("output.mp3")
                 PlayAudioData(clip_str)
 
 
+def text_to_ssml(ssml_str):
+    # プレーンテキスト入力に基づくSSMLテキストの文字列
+    # プレーンテキストからSSMLテキストを生成します。
+    # 入力ファイル名を指定すると、この関数はテキストファイルの内容をフォーマットされたSSMLテキストの文字列に変換します。
+    # この関数は、SSML文字列をフォーマットして、合成時に、合成オーディオがテキストファイルの各行の間で2秒間一時停止するようにします。
+    # プレーンテキストをSSMLに変換する
+    # 各アドレスの間に2秒待ちます
+    ssml = "<speak>{}</speak>".format(
+        ssml_str.replace("\n", '\n<break time="2s"/>')
+    )
+    # SSMLスクリプトの連結された文字列を返します
+    return ssml
+
+
 def PlayAudioData(clip_str):
-    """テキストの入力文字列から音声を合成する"""
+    """ssmlの入力文字列から音声を合成します。
+    注：ssmlは、次のように整形式である必要があります。
+        https://www.w3.org/TR/speech-synthesis/
+    Example: <speak>こんにちは。</speak>
+    """
     from google.cloud import texttospeech
-    import os
     client = texttospeech.TextToSpeechClient()
     input_text = texttospeech.SynthesisInput(text=clip_str)
 
@@ -29,14 +52,12 @@ def PlayAudioData(clip_str):
         name="ja-JP-Wavenet-C",
         ssml_gender=texttospeech.SsmlVoiceGender.MALE,
     )
-    audio_config = texttospeech.AudioConfig(
-        audio_encoding=texttospeech.AudioEncoding.MP3
-    )
+    audio_config = ({"audio_encoding": texttospeech.AudioEncoding.MP3})
+
     response = client.synthesize_speech(
         request={"input": input_text, "voice": voice, "audio_config": audio_config}
     )
-    os.remove("output.mp3")
-    # 応答のaudio_contentはバイナリデータ
+    # 応答のaudio_contentはバイナリデータです。
     with open("output.mp3", "wb") as out:
         out.write(response.audio_content)
         print('オーディオコンテンツはファイルoutput.mp3へ書き出されました。')
