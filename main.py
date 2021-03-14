@@ -1,7 +1,6 @@
 """テキストまたはssmlの入力文字列から音声を合成します。
 注：SSMLはhttps://www.w3.org/TR/speech-synthesis/に応じて適切に形成されなければなりません
 """
-from google.cloud.texttospeech_v1beta1 import AudioEncoding
 from playsound import playsound
 import pyperclip
 
@@ -52,10 +51,10 @@ def PlayAudioData(clip_str):
         name="ja-JP-Wavenet-C",
         ssml_gender=texttospeech.SsmlVoiceGender.MALE,
     )
-    audio_config = ({"audio_encoding": texttospeech.AudioEncoding.MP3})
+    AudioConfig = {"audio_encoding": texttospeech.AudioEncoding.MP3, "speaking_rate": 1.20,"pitch": 2.40}
 
     response = client.synthesize_speech(
-        request={"input": input_text, "voice": voice, "audio_config": audio_config}
+        request={"input": input_text, "voice": voice, "audio_config": AudioConfig}
     )
     # 応答のaudio_contentはバイナリデータです。
     with open("output.mp3", "wb") as out:
