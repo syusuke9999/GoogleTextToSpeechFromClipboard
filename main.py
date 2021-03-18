@@ -31,6 +31,7 @@ def text_to_ssml(ssml_str):
     ssml_text = ""
     ssml_text = "<speak>" + ssml_str + "</speak>"
     replace_ssml = ssml_text.replace('〜', 'から')
+    replace_ssml = replace_ssml.replace('賢人', 'けんじん')
     replace_ssml = replace_ssml.replace('討部会', 'とうぶかい')
     replace_ssml = replace_ssml.replace('　　', "<break time='400ms'/>")
     # SSMLスクリプトの連結された文字列を返します
@@ -53,7 +54,7 @@ def PlayAudioData(clip_str):
         name="ja-JP-Wavenet-C",
         ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL,
     )
-    audio_config = {"audio_encoding": texttospeech.AudioEncoding.MP3, "speaking_rate": 1.0,"pitch": 0.0}
+    audio_config = {"audio_encoding": texttospeech.AudioEncoding.MP3, "speaking_rate": 0.9,"pitch": -1.0}
     response = client.synthesize_speech(
         request={"input": input_text, "voice": voice, "audio_config": audio_config}
     )
