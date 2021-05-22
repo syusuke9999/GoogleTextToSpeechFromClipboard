@@ -10,15 +10,14 @@ def main():
     clip_str = ""
     while True:
         # クリップボードから文字列を取得する
-        if type(pyperclip.paste()) is str:
-            if clip_str != pyperclip.paste():
-                clip_str = pyperclip.paste()
-                ssml_text = text_to_ssml(clip_str)
-                print(ssml_text)
-                if os.path.isfile("output.mp3"):
-                    os.remove("output.mp3")
+        if type(pyperclip.paste()) is str and clip_str != pyperclip.paste():
+            clip_str = pyperclip.paste()
+            ssml_text = text_to_ssml(clip_str)
+            print(ssml_text)
+            if os.path.isfile("output.mp3"):
+                os.remove("output.mp3")
 
-                PlayAudioData(ssml_text)
+            PlayAudioData(ssml_text)
 
 
 def text_to_ssml(ssml_str):
@@ -54,7 +53,7 @@ def PlayAudioData(clip_str):
         name="ja-JP-Wavenet-C",
         ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL,
     )
-    audio_config = {"audio_encoding": texttospeech.AudioEncoding.MP3, "speaking_rate": 0.9,"pitch": -1.0}
+    audio_config = {"audio_encoding": texttospeech.AudioEncoding.MP3, "speaking_rate": 1.0, "pitch": 0.0}
     response = client.synthesize_speech(
         request={"input": input_text, "voice": voice, "audio_config": audio_config}
     )
