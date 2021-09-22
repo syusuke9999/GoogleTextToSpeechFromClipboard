@@ -4,6 +4,7 @@
 from playsound import playsound
 import pyperclip
 import time
+from google.cloud import texttospeech
 
 
 def main():
@@ -18,7 +19,7 @@ def main():
             if os.path.isfile("output.mp3"):
                 os.remove("output.mp3")
             time.sleep(1)
-            PlayAudioData(ssml_text)
+            playaudiodata(ssml_text)
 
 
 def text_to_ssml(ssml_str):
@@ -28,7 +29,7 @@ def text_to_ssml(ssml_str):
     # この関数は、SSML文字列をフォーマットして、合成時に、合成オーディオがテキストファイルの各行の間で2秒間一時停止するようにします。
     # プレーンテキストをSSMLに変換する
     # 各アドレスの間に2秒待ちます
-    ssml_text = ""
+    ssml_text: str = ""
     ssml_text = "<speak>" + ssml_str + "</speak>"
     replace_ssml = ssml_text.replace('〜', 'から')
     replace_ssml = replace_ssml.replace('賢人', 'けんじん')
@@ -38,7 +39,7 @@ def text_to_ssml(ssml_str):
     return replace_ssml
 
 
-def PlayAudioData(clip_str):
+def playaudiodata(clip_str):
     """ssmlの入力文字列から音声を合成します。
     注：ssmlは、次のように整形式である必要があります。
         https://www.w3.org/TR/speech-synthesis/
