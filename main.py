@@ -3,6 +3,7 @@
 """
 from playsound import playsound
 import pyperclip
+import time
 
 
 def main():
@@ -16,7 +17,7 @@ def main():
             print(ssml_text)
             if os.path.isfile("output.mp3"):
                 os.remove("output.mp3")
-
+            time.sleep(1)
             PlayAudioData(ssml_text)
 
 
